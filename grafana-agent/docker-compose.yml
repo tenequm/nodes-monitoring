@@ -25,8 +25,6 @@ services:
       - -config.enable-read-api
     environment:
       HOSTNAME: ${HOSTNAME}
-      PROMETHEUS_URL: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom/push
-      PROMETHEUS_USER: 490976
-      LOKI_URL: https://logs-prod-eu-west-0.grafana.net/loki/api/v1/push
-      LOKI_USER: 244458
-      GC_API_KEY: ${GC_API_KEY}
+      PROMETHEUS_URL: http://vm.tenmon.tk/api/v1/write
+      PROMETHEUS_USER: admin
+      GC_API_KEY: admin
