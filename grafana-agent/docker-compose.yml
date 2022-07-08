@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  grafana-agent:
+    image: grafana/agent:v0.25.1
+    restart: unless-stopped
+    hostname: ${HOSTNAME}
+    cap_add: [SYS_TIME]
+    network_mode: host
+    pid: host
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - ./agent.yaml:/etc/agent/agent.yaml
+      - /:/rootfs:ro
+      - /sys:/sys:ro
+      - /proc:/host/proc:ro
+      - /var/run:/var/run:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    entrypoint:
+      - /bin/agent
+      - -config.file=/etc/agent/agent.yaml
+      - -config.expand-env
+      - -config.enable-read-api
+    environment:
+      HOSTNAME: ${HOSTNAME}
+      PROMETHEUS_URL: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom/push
+      PROMETHEUS_USER: 490976
+      LOKI_URL: https://logs-prod-eu-west-0.grafana.net/loki/api/v1/push
+      LOKI_USER: 244458
+      GC_API_KEY: ${GC_API_KEY}

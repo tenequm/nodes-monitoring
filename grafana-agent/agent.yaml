@@ -1,0 +1,43 @@
+integrations:
+  node_exporter:
+    enabled: true
+    instance: ${HOSTNAME}
+    rootfs_path: /rootfs
+    procfs_path: /host/proc
+    set_collectors:
+      - conntrack
+      - cpu
+      - devstat
+      - diskstats
+      - filesystem
+      - loadavg
+      - meminfo
+      - netstat
+      - os
+      - stat
+      - time
+      - uname
+      - vmstat
+  cadvisor:
+    enabled: true
+    docker_only: true
+    instance: ${HOSTNAME}
+    relabel_configs:
+      - action: replace
+        replacement: integrations/docker
+        target_label: job
+
+metrics:
+  global:
+    scrape_interval: 1m
+    remote_write:
+    - url: ${PROMETHEUS_URL}
+      basic_auth:
+        password: ${GC_API_KEY}
+        username: ${PROMETHEUS_USER}
+  configs:
+  - name: ${HOSTNAME}
+    scrape_configs:
+    - job_name: aptos
+      static_configs:
+      - targets: ['localhost:9101']
