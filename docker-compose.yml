@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   nginx:
-    image: 'jc21/nginx-proxy-manager:latest'
+    image: jc21/nginx-proxy-manager:2
     restart: unless-stopped
     ports:
       - '80:80'
@@ -22,7 +22,7 @@ services:
       - "2003/udp"
       - "4242"
     volumes:
-      - vmdata::/victoria-metrics-data
+      - vmdata:/victoria-metrics-data
     command:
       - "--graphiteListenAddr=:2003"
       - "--opentsdbListenAddr=:4242"
