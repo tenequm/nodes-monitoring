@@ -9,7 +9,7 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - "--promscrape.config=/etc/prometheus/prometheus.yml"
-      - "--remoteWrite.url=http://${PROM_URL:-vm.tenmon.tk}/api/v1/write"
+      - "--remoteWrite.url=${PROM_URL:-https://vm.tenmon.tk}/api/v1/write"
       - "--remoteWrite.basicAuth.username=${PROM_PASSWORD:-admin}"
       - "--remoteWrite.basicAuth.password=${PROM_USERNAME:-admin}"
       - "--remoteWrite.label=hostname=${HOSTNAME:-changeme}"
