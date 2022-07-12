@@ -1,0 +1,4 @@
+users:
+- url_prefix: "http://victoriametrics:8428"
+  username: %{AUTH_USER}
+  password: %{AUTH_PASSWORD}

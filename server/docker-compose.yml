@@ -1,33 +1,25 @@
 version: '3.8'
 services:
-  nginx:
-    image: jc21/nginx-proxy-manager:2
-    restart: unless-stopped
+  vmauth:
+    image: victoriametrics/vmauth:v1.78.1
+    restart: always
     ports:
-      - '80:80'
-      - '81:81'
-      - '443:443'
+      - "8428:8427"
     volumes:
-      - nginx-data:/data
-      - nginx-letsencrypt:/etc/letsencrypt
+      - ./victoriametrics/vmauth.yml:/etc/vmauth.yml
+    command:
+      - "-auth.config=/etc/vmauth.yml"
+    environment:
+      AUTH_USER: ${AUTH_USER:-admin-doubletop}
+      AUTH_PASSWORD: ${AUTH_PASSWORD:-doubletop}
   
   victoriametrics:
     image: victoriametrics/victoria-metrics:v1.78.1
     restart: always
     expose:
       - "8428"
-      - "8089"
-      - "8089/udp"
-      - "2003"
-      - "2003/udp"
-      - "4242"
     volumes:
       - vmdata:/victoria-metrics-data
-    command:
-      - "--graphiteListenAddr=:2003"
-      - "--opentsdbListenAddr=:4242"
-      - "--httpListenAddr=:8428"
-      - "--influxListenAddr=:8089"
   
   vmagent:
     image: victoriametrics/vmagent:v1.78.1
@@ -36,16 +28,17 @@ services:
       - "8429"
     volumes:
       - vmagentdata:/vmagentdata
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./victoriametrics/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - "--promscrape.config=/etc/prometheus/prometheus.yml"
       - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
+      - "--remoteWrite.label=hostname=${HOSTNAME:-monitoring}"
 
   grafana:
     image: grafana/grafana:9.0.2
     restart: always
-    expose:
-      - "3000"
+    ports:
+      - "80:3000"
     volumes:
       - grafanadata:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
@@ -55,5 +48,3 @@ volumes:
   vmdata:
   vmagentdata:
   grafanadata:
-  nginx-data:
-  nginx-letsencrypt:
