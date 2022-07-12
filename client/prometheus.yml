@@ -18,11 +18,3 @@ scrape_configs:
         regex: '.*'
         target_label: instance
         replacement: '%{HOSTNAME}'
-  - job_name: aptos
-    static_configs:
-      - targets: ['localhost:9101']
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: '.*'
-        target_label: instance
-        replacement: '%{HOSTNAME}'
