@@ -2,6 +2,7 @@ version: '3.8'
 services:
   vmauth:
     image: victoriametrics/vmauth:v1.78.1
+    labels: {monitoring: 'true'}
     restart: always
     ports:
       - "8428:8427"
@@ -15,6 +16,7 @@ services:
   
   victoriametrics:
     image: victoriametrics/victoria-metrics:v1.78.1
+    labels: {monitoring: 'true'}
     restart: always
     expose:
       - "8428"
@@ -23,6 +25,7 @@ services:
   
   vmagent:
     image: victoriametrics/vmagent:v1.78.1
+    labels: {monitoring: 'true'}
     restart: always
     expose:
       - "8429"
@@ -36,6 +39,7 @@ services:
 
   grafana:
     image: grafana/grafana:9.0.2
+    labels: {monitoring: 'true'}
     restart: always
     ports:
       - "80:3000"
