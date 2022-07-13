@@ -26,16 +26,18 @@ services:
   vmagent:
     image: victoriametrics/vmagent:v1.78.1
     labels: {monitoring: 'true'}
+    hostname: ${HOSTNAME:-monitoring}
     restart: always
     expose:
       - "8429"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - vmagentdata:/vmagentdata
       - ./victoriametrics/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - "--promscrape.config=/etc/prometheus/prometheus.yml"
       - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
-      - "--remoteWrite.label=hostname=${HOSTNAME:-monitoring}"
 
   grafana:
     image: grafana/grafana:9.0.2
@@ -47,6 +49,18 @@ services:
       - grafanadata:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
       - ./grafana/dashboards:/var/lib/grafana/dashboards
+  
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.3.1
+    labels: {monitoring: 'true'}
+    command: 
+      - '--path.rootfs=/host'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
 
 volumes:
   vmdata:
