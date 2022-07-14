@@ -20,6 +20,7 @@ services:
     command: 
       - '--path.rootfs=/host'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.systemd'
     network_mode: host
     pid: host
     restart: unless-stopped
