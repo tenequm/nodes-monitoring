@@ -17,15 +17,17 @@ services:
   node_exporter:
     image: quay.io/prometheus/node-exporter:v1.3.1
     labels: {monitoring: 'true'}
+    user: root
+    network_mode: host
+    pid: host
+    restart: unless-stopped
     command: 
       - '--path.rootfs=/host'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
       - '--collector.systemd'
-    network_mode: host
-    pid: host
-    restart: unless-stopped
     volumes:
       - '/:/host:ro,rslave'
+      - '/run/systemd/private:/run/systemd/private:ro'
   
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.44.0
