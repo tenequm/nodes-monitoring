@@ -38,6 +38,7 @@ services:
     command:
       - "--promscrape.config=/etc/prometheus/prometheus.yml"
       - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
+      - "--remoteWrite.label=hostname=monitoring"
 
   grafana:
     image: grafana/grafana:9.0.2
