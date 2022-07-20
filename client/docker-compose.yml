@@ -49,7 +49,7 @@ services:
   docker_state_exporter:
     image: karugaru/docker_state_exporter
     network_mode: host
-    command: '-listen-address=:8081'
+    command: '-listen-address=:9491'
     volumes:
       - type: bind
         source: /var/run/docker.sock
