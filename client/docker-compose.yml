@@ -48,6 +48,7 @@ services:
 
   docker_state_exporter:
     image: karugaru/docker_state_exporter
+    restart: unless-stopped
     network_mode: host
     command: '-listen-address=:9491'
     volumes:
